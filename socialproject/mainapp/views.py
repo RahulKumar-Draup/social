@@ -48,7 +48,7 @@ def getpost(request):
     return Response(serializer.data)
 
 
-class GroupApi(generics.CreateAPIView):
+class GroupApi(CreateModelMixin, GenericAPIView):
     quaryset = Group.objects.all()
     serializer_class = GroupSerializer
 
