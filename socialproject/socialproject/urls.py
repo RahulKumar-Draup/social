@@ -20,5 +20,13 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('api.urls')),
+    path('', include('mainapp.urls')),
+    path('getuser/', include('mainapp.urls')),
+    path('add/', include('mainapp.urls')),
+    path('all/',include('mainapp.urls')),
+    path('api/',include('mainapp.urls')),
+    path('postbyuser/',include('mainapp.urls')),
+
+    path('create/',include('mainapp.urls')),
+    path('make/',include('mainapp.urls')),
 ]

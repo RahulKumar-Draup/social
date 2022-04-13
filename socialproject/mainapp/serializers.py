@@ -1,27 +1,27 @@
 from rest_framework import serializers
-from socialproject.mainapp.models import User, Group, Post, Comment
+from .models import User, Group, Post, Comment
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        models = User
+        model = User
         fields = '__all__'
 
 
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
-        models = Group
+        model = Group
         fields = '__all__'
 
 
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
-        models = Post
+        model = Post
         fields = '__all__'
 
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
-        models = Comment
+        model = Comment
         fields = '__all__'
 
