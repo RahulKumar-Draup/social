@@ -26,6 +26,7 @@ urlpatterns = [
     path('all/',include('mainapp.urls')),
     path('api/',include('mainapp.urls')),
     path('postbyuser/',include('mainapp.urls')),
+    path('byuser/',include('mainapp.urls')),
 
     path('create/',include('mainapp.urls')),
     path('make/',include('mainapp.urls')),

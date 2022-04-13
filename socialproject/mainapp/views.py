@@ -15,6 +15,7 @@ def overview(request):
         'Create NEW user': 'http://127.0.0.1:8000/create/users/',
         'ADD NEW GROUP': 'http://127.0.0.1:8000/api/check/',
         'MAKE POST': 'http://127.0.0.1:8000/make/post/',
+        "MAKE COMMENT ON POST": 'http://127.0.0.1:8000/byuser/comment/',
         'VIEW ALL USER JSON ': 'http://127.0.0.1:8000/getuser/all/',
         'VIEW ALL GROUP JSON': 'http://127.0.0.1:8000/all/group/',
         'VIEW ALL POSTS JSON': 'http://127.0.0.1:8000/postbyuser/posts/'
@@ -77,6 +78,18 @@ class UserApi(CreateModelMixin, GenericAPIView):
 class PostApi(CreateModelMixin, GenericAPIView):
     quaryset = Post.objects.all()
     serializer_class = PostSerializer
+
+    def post(self, request, *args, **kwargs):
+        try:
+            return self.create(request, *args, **kwargs)
+        except Exception:
+            return Response({
+                "message": "Failed"
+            })
+
+class CommentApi(CreateModelMixin, GenericAPIView):
+    quaryset = Comment.objects.all()
+    serializer_class = CommentSerializer
 
     def post(self, request, *args, **kwargs):
         try:

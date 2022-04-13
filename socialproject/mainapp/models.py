@@ -29,6 +29,10 @@ class Post(models.Model):
     modified_on = models.DateTimeField()
     created_on = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return self.post_msg
+
+
 
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)

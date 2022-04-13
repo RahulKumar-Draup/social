@@ -7,8 +7,7 @@ urlpatterns = [
     path('posts/', views.getpost),
     path('group/', views.getgrp),
     path('check/', views.GroupApi.as_view()),
-
-
+    path('comment/',views.CommentApi.as_view()),
     path('users/', views.UserApi.as_view()),
     path('post/', views.PostApi.as_view()),
 
