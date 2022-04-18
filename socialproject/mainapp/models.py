@@ -11,9 +11,9 @@ class Group(models.Model):
         ('PRIVATE', 'private'),
     ))
 
-    is_admin = models.ManyToManyField(User, related_name='Admin', blank=True)
-    is_moderator = models.ManyToManyField(User, related_name="Moderator", blank=True)
-    is_member = models.ManyToManyField(User, related_name="Member", blank=True)
+    is_admin = models.ManyToManyField(User, related_name='Admin', blank=False)
+    is_moderator = models.ManyToManyField(User, related_name="Moderator", blank=False)
+    is_member = models.ManyToManyField(User, related_name="Member", blank=False)
     modified_on = models.DateTimeField()
     created_on = models.DateTimeField(auto_now_add=True)
 
