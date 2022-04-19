@@ -5,71 +5,27 @@ from rest_framework.response import Response
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from django.contrib.auth.models import AnonymousUser
 from rest_framework.authentication import SessionAuthentication
-from rest_framework.decorators import api_view, authentication_classes
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from .models import User, Group, Post, Comment
 from. serializers import UserSerializer, GroupSerializer, PostSerializer, CommentSerializer
-
-
-@api_view(['GET'])
-def registration_list(request):
-
-    x = {
-        'Create new account': 'http://127.0.0.1:8000/userlc/',
-        'LOGIN': 'http://127.0.0.1:8000/login',
-    }
-    return Response(x)
+from . permission import Writebyadmin, Writebymoderator
 
 
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication])
-def home_page(request):
-    y = {
-        'post list and create ': 'http://127.0.0.1:8000/postlc/',
-        'comment list and crate': 'http://127.0.0.1:8000/commentlc/',
-        'group list and create': 'http://127.0.0.1:8000/grouplc/',
+def registration_list(request):
+
+
+    x = {
+        'user': 'http://127.0.0.1:8000/user/',
+        'posts': 'http://127.0.0.1:8000/posts/',
+        'group': 'http://127.0.0.1:8000/group/',
+        'comment':'http://127.0.0.1:8000/comment/',
+
+
+        'message':'to delete or update use pk of obj',
     }
-    return Response(y)
-
-
-class UserListCreate(ListCreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-
-class PostListCreate(ListCreateAPIView):
-    queryset = Post.objects.all()
-    serializer_class = PostSerializer
-
-
-class CommentListCreate(ListCreateAPIView):
-    queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
-
-
-class GroupListCreate(ListCreateAPIView):
-    queryset = Group.objects.all()
-    serializer_class = GroupSerializer
-
-
-class UserCrud(RetrieveUpdateDestroyAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-
-class PostCrud(RetrieveUpdateDestroyAPIView):
-    queryset = Post.objects.all()
-    serializer_class = PostSerializer
-
-
-class CommentCrud(RetrieveUpdateDestroyAPIView):
-    queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
-
-
-class GroupCrud(RetrieveUpdateDestroyAPIView):
-    queryset = Group.objects.all()
-    serializer_class = GroupSerializer
-    permission_classes = [IsAdminUser]
+    return Response(x)
 
 
 """mail sending list and function"""
@@ -95,18 +51,6 @@ def mail(request):
     except User.DoesNotExist:
         pass
 
-# @api_view(['GET', 'POST', 'PUT', 'DELETE'])
-# @authentication_classes([SessionAuthentication])
-# @permission_classes([IsAuthenticated])
-# def private(request):
-#     lst = []
-#     val = request.user if type(request.user) is not AnonymousUser else None
-#     res = Group.objects.all()
-#     for i in range(len(res)):
-#         print(res[i].group_type)
-#         if res[i].group_type == 'PRIVATE':
-#             lst.append(res[i].group_name)
-#     return Response(lst)
 
 
 """API VIEW OF USERS"""
@@ -127,6 +71,8 @@ def listandretrive(request):
 
 
 @api_view(['PUT', 'GET', 'DELETE'])
+# permission to admin ,user,and moderator
+@permission_classes([Writebymoderator])
 def usermanag(request, pk):
     try:
         user = User.objects.get(id=pk)
@@ -164,6 +110,7 @@ def listandviewpost(request):
 
 
 @api_view(['PUT', 'GET', 'DELETE'])
+@permission_classes([Writebymoderator])
 def postmanag(request, pk):
     try:
         post = Post.objects.get(id=pk)
@@ -238,6 +185,8 @@ def listandviewgroup(request):
 
 
 @api_view(['PUT', 'GET', 'DELETE'])
+# permission to only admin
+@permission_classes([Writebyadmin])
 def groupmanag(request, pk):
     try:
         group = Group.objects.get(id=pk)
@@ -256,14 +205,7 @@ def groupmanag(request, pk):
         group.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+@api_view(['DELETE'])
+def activestatus(request):
+    pass
 
-class writebyadmin(BasePermission):
-    def has_permission(self, request, view):
-        print(request.user)
-        user = request.user
-        if request.method == 'GET':
-            return True
-        elif request.method == 'POST' or request.method == 'Put' or request.method == 'DELETE':
-            if user.is_superuser:
-                return True
-        return False

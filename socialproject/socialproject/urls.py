@@ -21,22 +21,6 @@ from mainapp import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.registration_list),
-    path('login', views.home_page),
-    # creating and posting
-    path('userlc/', views.UserListCreate.as_view()),
-    path('postlc/', views.PostListCreate.as_view()),
-    path('commentlc/', views.CommentListCreate.as_view()),
-    path('grouplc/', views.GroupListCreate.as_view()),
-    # performing CRUD operations on all models fields
-    path('userlc/<int:pk>/', views.UserCrud.as_view()),
-    path('postlc/<int:pk>/', views.PostCrud.as_view()),
-    path('commentlc/<int:pk>/', views.CommentCrud.as_view()),
-    path('grouplc/<int:pk>/', views.GroupCrud.as_view()),
-    path('auth', include('rest_framework.urls', namespace='rest_framework')),
-    path('mail/', views.mail),
-    # path('private/', views.private),
-
-
     path('user/', views.listandretrive),
     path('user/<int:pk>/', views.usermanag),
 
@@ -48,5 +32,25 @@ urlpatterns = [
 
     path('group/', views.listandviewgroup),
     path('group/<int:pk>/', views.groupmanag),
+    # creating and posting
+    # path('userlc/', views.UserListCreate.as_view()),
+    # path('postlc/', views.PostListCreate.as_view()),
+    # path('commentlc/', views.CommentListCreate.as_view()),
+    # path('grouplc/', views.GroupListCreate.as_view()),
+    # # performing CRUD operations on all models fields
+    # path('userlc/<int:pk>/', views.UserCrud.as_view()),
+    # path('postlc/<int:pk>/', views.PostCrud.as_view()),
+    # path('commentlc/<int:pk>/', views.CommentCrud.as_view()),
+    # path('grouplc/<int:pk>/', views.GroupCrud.as_view()),
+    path('auth', include('rest_framework.urls', namespace='rest_framework')),
+    path('mail/', views.mail),
+    # path('private/', views.private),
+
+
+
+
+
+
+
 
 ]
