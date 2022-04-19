@@ -33,10 +33,20 @@ urlpatterns = [
     path('commentlc/<int:pk>/', views.CommentCrud.as_view()),
     path('grouplc/<int:pk>/', views.GroupCrud.as_view()),
     path('auth', include('rest_framework.urls', namespace='rest_framework')),
-    # path('random/', views.sending_mail())
-    path('check/', views.check),
-    path('private/', views.private),
+    path('mail/', views.mail),
+    # path('private/', views.private),
+
+
+    path('user/', views.listandretrive),
+    path('user/<int:pk>/', views.usermanag),
+
+    path('posts/', views.listandviewpost),
+    path('posts/<int:pk>/', views.postmanag),
+
+    path('comment/', views.listandviewcomment),
+    path('comment/<int:pk>/', views.commentmanag),
+
+    path('group/', views.listandviewgroup),
+    path('group/<int:pk>/', views.groupmanag),
 
 ]
-
-
