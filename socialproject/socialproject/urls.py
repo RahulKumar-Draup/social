@@ -32,6 +32,9 @@ urlpatterns = [
 
     path('group/', views.listandviewgroup),
     path('group/<int:pk>/', views.groupmanag),
+    path('delete/', views.deleteinactive),
+
+
     # creating and posting
     # path('userlc/', views.UserListCreate.as_view()),
     # path('postlc/', views.PostListCreate.as_view()),

@@ -1,29 +1,27 @@
+import datetime
+from . permission import Writebyadmin, Writebymoderator
+from datetime import date, timedelta
 from django.core.mail import send_mail
-from rest_framework.permissions import IsAdminUser, BasePermission
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from django.contrib.auth.models import AnonymousUser
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from .models import User, Group, Post, Comment
 from. serializers import UserSerializer, GroupSerializer, PostSerializer, CommentSerializer
-from . permission import Writebyadmin, Writebymoderator
 
 
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication])
 def registration_list(request):
-
-
     x = {
         'user': 'http://127.0.0.1:8000/user/',
         'posts': 'http://127.0.0.1:8000/posts/',
         'group': 'http://127.0.0.1:8000/group/',
-        'comment':'http://127.0.0.1:8000/comment/',
+        'delete inactive user': 'http://127.0.0.1:8000/delete/',
+        'comment': 'http://127.0.0.1:8000/comment/',
 
 
-        'message':'to delete or update use pk of obj',
+        'message': 'to delete or update use pk of obj',
     }
     return Response(x)
 
@@ -50,7 +48,6 @@ def mail(request):
         return Response(lst)
     except User.DoesNotExist:
         pass
-
 
 
 """API VIEW OF USERS"""
@@ -205,7 +202,20 @@ def groupmanag(request, pk):
         group.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-@api_view(['DELETE'])
-def activestatus(request):
-    pass
+
+#  to delete inactive user only by admin
+@api_view(['GET', 'DELETE'])
+@permission_classes([Writebyadmin])
+def deleteinactive(request):
+    lst = []
+    current_day = date.today()
+    previous_day = current_day-timedelta(1)
+    users = User.objects.all()
+    for i in range(len(users)):
+        if not users[i].is_active:
+            lst.append(users[i].username)
+    print(lst)
+    for elem in lst:
+        users.delete()
+    return Response(lst)
 
