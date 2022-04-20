@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Group, Post, Comment
+from .models import Group, Post, Comment,User
 
 # Register your models here.
 
@@ -17,3 +17,5 @@ class PostAdmin(admin.ModelAdmin):
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
     list_display = ['post', 'comment_msg', 'created_on']
+
+

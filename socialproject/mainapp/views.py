@@ -1,13 +1,17 @@
 import datetime
-from . permission import Writebyadmin, Writebymoderator
+from . permission import Writebyadmin
+# Writebymoderator
 from datetime import date, timedelta
 from django.core.mail import send_mail
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.authentication import SessionAuthentication
+from rest_framework.authentication import SessionAuthentication,BasicAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from .models import User, Group, Post, Comment
 from. serializers import UserSerializer, GroupSerializer, PostSerializer, CommentSerializer
+from rest_framework.permissions import IsAuthenticated
+
+
 
 
 @api_view(['GET'])
@@ -69,10 +73,19 @@ def listandretrive(request):
 
 @api_view(['PUT', 'GET', 'DELETE'])
 # permission to admin ,user,and moderator
-@permission_classes([Writebymoderator])
+@permission_classes([IsAuthenticated])
 def usermanag(request, pk):
     try:
+        lst = []
         user = User.objects.get(id=pk)
+        lst.append(user.email)
+        send_mail(
+            'activity in group',
+            'check activity in group',
+            'rahul992134@gmail.com',
+            lst,
+            fail_silently=False
+        )
     except User.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     if request.method == 'GET':
@@ -107,7 +120,7 @@ def listandviewpost(request):
 
 
 @api_view(['PUT', 'GET', 'DELETE'])
-@permission_classes([Writebymoderator])
+@permission_classes([IsAuthenticated])
 def postmanag(request, pk):
     try:
         post = Post.objects.get(id=pk)
@@ -167,7 +180,7 @@ def commentmanag(request, pk):
 """API VIEW OF GROUPS"""
 
 
-@api_view(['get', 'POST'])
+@api_view(['GET', 'POST'])
 def listandviewgroup(request):
     if request.method == "GET":
         groups = Group.objects.all()
@@ -211,11 +224,18 @@ def deleteinactive(request):
     current_day = date.today()
     previous_day = current_day-timedelta(1)
     users = User.objects.all()
+
     for i in range(len(users)):
         if not users[i].is_active:
             lst.append(users[i].username)
     print(lst)
+    send_mail(
+        'account deletion',
+        'your profile is deleted for being inactive',
+        'rahul992134@gmail.com',
+        lst,
+        fail_silently=False
+    )
     for elem in lst:
         users.delete()
     return Response(lst)
-
