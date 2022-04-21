@@ -1,5 +1,4 @@
 from rest_framework.permissions import BasePermission
-from . models import *
 
 
 # only admin can access to perform put and delete ---applies to group only
