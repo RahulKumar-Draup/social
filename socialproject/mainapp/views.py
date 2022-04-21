@@ -1,6 +1,5 @@
 import datetime
 from . permission import Writebyadmin
-# Writebymoderator
 from datetime import date, timedelta
 from django.core.mail import send_mail
 from rest_framework import status
@@ -9,9 +8,7 @@ from rest_framework.authentication import SessionAuthentication,BasicAuthenticat
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from .models import User, Group, Post, Comment
 from. serializers import UserSerializer, GroupSerializer, PostSerializer, CommentSerializer
-from rest_framework.permissions import IsAuthenticated
-
-
+from rest_framework.permissions import IsAuthenticated,AllowAny, IsAdminUser
 
 
 @api_view(['GET'])
@@ -55,9 +52,11 @@ def mail(request):
 
 
 """API VIEW OF USERS"""
+# can  be accessed by anyone only get and post new user.
 
 
-@api_view(['get', 'POST'])
+@api_view(['GET', 'POST'])
+@permission_classes([AllowAny])
 def listandretrive(request):
     if request.method == "GET":
         users = User.objects.all()
@@ -71,10 +70,11 @@ def listandretrive(request):
         return Response(userserializer.errors)
 
 
+# deleting and updating user is allowed only to member
 @api_view(['PUT', 'GET', 'DELETE'])
 # permission to admin ,user,and moderator
-@permission_classes([IsAuthenticated])
-def usermanag(request, pk):
+@permission_classes([IsAuthenticated or IsAdminUser])
+def usermanage(request, pk):
     try:
         lst = []
         user = User.objects.get(id=pk)
@@ -105,7 +105,9 @@ def usermanag(request, pk):
 """API VIEW OF POSTS"""
 
 
-@api_view(['get', 'POST'])
+# to view and make post user needs to be a member
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated or IsAdminUser])
 def listandviewpost(request):
     if request.method == "GET":
         posts = Post.objects.all()
@@ -119,9 +121,10 @@ def listandviewpost(request):
         return Response(userserializer.errors)
 
 
+# only registered member to delete and update post
 @api_view(['PUT', 'GET', 'DELETE'])
-@permission_classes([IsAuthenticated])
-def postmanag(request, pk):
+@permission_classes([IsAuthenticated or IsAdminUser])
+def postmanage(request, pk):
     try:
         post = Post.objects.get(id=pk)
     except Post.DoesNotExist:
@@ -142,8 +145,9 @@ def postmanag(request, pk):
 
 """API VIEW OF COMMENTS"""
 
-
-@api_view(['get', 'POST'])
+# to comment and view comment user needs to be member
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated or IsAdminUser])
 def listandviewcomment(request):
     if request.method == "GET":
         comments = Comment.objects.all()
@@ -157,8 +161,10 @@ def listandviewcomment(request):
         return Response(commentserializer.errors)
 
 
+# to delete and update comment user needs to be member
 @api_view(['PUT', 'GET', 'DELETE'])
-def commentmanag(request, pk):
+@permission_classes([IsAuthenticated or IsAdminUser])
+def commentmanage(request, pk):
     try:
         comment = Comment.objects.get(id=pk)
     except Comment.DoesNotExist:
@@ -179,8 +185,11 @@ def commentmanag(request, pk):
 
 """API VIEW OF GROUPS"""
 
+# to view group and create a new group user needs to be a member
+
 
 @api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated or IsAdminUser])
 def listandviewgroup(request):
     if request.method == "GET":
         groups = Group.objects.all()
@@ -194,10 +203,10 @@ def listandviewgroup(request):
         return Response(groupserializer.errors)
 
 
+# permission to only admin to delete and update a group
 @api_view(['PUT', 'GET', 'DELETE'])
-# permission to only admin
 @permission_classes([Writebyadmin])
-def groupmanag(request, pk):
+def groupmanage(request, pk):
     try:
         group = Group.objects.get(id=pk)
     except Group.DoesNotExist:
@@ -216,15 +225,14 @@ def groupmanag(request, pk):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-#  to delete inactive user only by admin
+#  to delete inactive user only by admin and send mail to inform their acc is deleted
 @api_view(['GET', 'DELETE'])
 @permission_classes([Writebyadmin])
 def deleteinactive(request):
     lst = []
-    current_day = date.today()
-    previous_day = current_day-timedelta(1)
+    # current_day = date.today()
+    # previous_day = current_day-timedelta(1)
     users = User.objects.all()
-
     for i in range(len(users)):
         if not users[i].is_active:
             lst.append(users[i].username)
