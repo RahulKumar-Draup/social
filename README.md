@@ -1,8 +1,9 @@
 # social
 django social app
 
-unregistered user can see all posts and comment(can update and delete comment also) and can also make posts.
-registered user(admin,moderator and registered user) can delete, update post and get
+unregistered users are restricted from everything except for registering themselves
 
-only admin has access to group(update, delete)
-admin shall call deleteinactiveuser function to delete inactive users and send mail to all inactive user together
+registered user have access to  CRUD operations on post ,user, comment
+
+managing group is only managed by admin
+deleting inactive user is also managed by only admin
