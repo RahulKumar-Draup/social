@@ -22,16 +22,16 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.registration_list),
     path('user/', views.listandretrive),
-    path('user/<int:pk>/', views.usermanag),
+    path('user/<int:pk>/', views.usermanage),
 
     path('posts/', views.listandviewpost),
-    path('posts/<int:pk>/', views.postmanag),
+    path('posts/<int:pk>/', views.postmanage),
 
     path('comment/', views.listandviewcomment),
-    path('comment/<int:pk>/', views.commentmanag),
+    path('comment/<int:pk>/', views.commentmanage),
 
     path('group/', views.listandviewgroup),
-    path('group/<int:pk>/', views.groupmanag),
+    path('group/<int:pk>/', views.groupmanage),
     path('delete/', views.deleteinactive),
 
 
